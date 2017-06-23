@@ -5,7 +5,7 @@
 
 class Agent {
 private:
-	vector<bool>				grid;
+	vector<bool>                grid;
 	int							width  = 0;
 	int							height = 0;
 

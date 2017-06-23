@@ -7,7 +7,7 @@ class Arduino {
 private:
 	ofSerial					s;
 
-	vector<bool>				g;
+	vector<bool>                g;
 public:
 	Arduino();
 
