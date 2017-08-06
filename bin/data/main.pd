@@ -1,0 +1,28 @@
+#N canvas 336 126 457 317 10;
+#X obj 70 9 r trigger;
+#N canvas 0 22 450 278 (subpatch) 0;
+#X array scale 6 float 3;
+#A 0 0 3 5 7 10 12;
+#X coords 0 12 6 0 200 140 1 0 0;
+#X restore 231 153 graph;
+#X obj 230 9 loadbang;
+#X obj 92 53 tabread scale;
+#X obj 52 9 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 71 120 adsr;
+#X msg 230 31 \; scale 0 0 3 5 7 10 12;
+#X obj 92 31 random 6;
+#X obj 92 75 + 64;
+#X obj 92 98 synth;
+#X obj 71 279 dac~;
+#X connect 0 0 7 0;
+#X connect 0 0 5 0;
+#X connect 2 0 6 0;
+#X connect 3 0 8 0;
+#X connect 4 0 7 0;
+#X connect 4 0 5 0;
+#X connect 5 0 10 0;
+#X connect 5 0 10 1;
+#X connect 7 0 3 0;
+#X connect 8 0 9 0;
+#X connect 9 0 5 1;

@@ -20,4 +20,5 @@ public:
     
     void                        openPatch(string path);
     
+    void                        sendBang(string r);
 };

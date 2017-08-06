@@ -38,4 +38,10 @@ void PureData::audioOut(float * output, int bufferSize, int nChannels) {
 //--------------------------------------------------------------
 void PureData::openPatch(string path) {
     pd.openPatch(path);
+    pd.start();
+}
+
+//--------------------------------------------------------------
+void PureData::sendBang(string r) {
+    pd.sendBang(r);
 }

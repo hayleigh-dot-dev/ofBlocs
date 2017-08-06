@@ -13,15 +13,19 @@ void ofApp::setup(){
     agentSystem.addAgent();
 	agentSystem.addAgent();
 
-	Agent & selectedAgent = agentSystem.getAgent(0);
-	selectedAgent.resizeGrid(5, 5);
-	for (int j = 0; j < 25; j++) {
-		selectedAgent.updateGrid(j, false);
-	}
-	selectedAgent.updateGrid(4, 0, true);
-	selectedAgent.updateGrid(1, 0, true);
-	//selectedAgent.updateGrid(0, 4, true);
-    
+    for(int i = 0; i < agentSystem.size(); i++) {
+        Agent & selectedAgent = agentSystem.getAgent(i);
+        selectedAgent.resizeGrid(5, 5);
+        for (int j = 0; j < 25; j++) {
+            selectedAgent.updateGrid(j, false);
+        }
+        selectedAgent.updateGrid(4, 0, true);
+        selectedAgent.updateGrid(1, 0, true);
+        selectedAgent.updateGrid(0, 4, true);
+        selectedAgent.updateGrid(2, 0, true);
+        selectedAgent.updateGrid(3, 3, true);
+    }
+
     //--------------------------------------------------------------
     // Setup PureData
     
@@ -40,20 +44,27 @@ void ofApp::setup(){
     if(!pd.setup(2, numInputs, 44100, ticksPerBuffer, false)) {
         OF_EXIT_APP(1);
     }
+    pd.openPatch("main.pd");
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-	agentSystem.updateAgent(0);
-
-	if (timer == 0) {
-		int  x = agentSystem.getAgentX(0);
-		int  y = agentSystem.getAgentY(0);
-		bool b = agentSystem.hasAgentCollided(0);
-
-		if (b) ofLog(OF_LOG_NOTICE, "Collision detected");
-		ofLog(OF_LOG_NOTICE, "Agent position is: " + ofToString(x) + " : " + ofToString(y));
-	}
+    
+    for(int i = 0; i < agentSystem.size(); i++) {
+        agentSystem.updateAgent(i);
+        
+        if (timer == 0) {
+            int  x = agentSystem.getAgentX(i);
+            int  y = agentSystem.getAgentY(i);
+            bool b = agentSystem.hasAgentCollided(i);
+            
+            if (b) {
+                ofLog(OF_LOG_NOTICE, "Collision detected");
+                pd.sendBang("trigger");
+            }
+            ofLog(OF_LOG_NOTICE, "Agent"+ofToString(i)+" position is: " + ofToString(x) + " : " + ofToString(y));
+        }
+    }
 
 	timer = ++timer % 60;
 }

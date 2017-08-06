@@ -5,12 +5,20 @@
 
 class Arduino {
 private:
-	ofSerial					s;
+	ofSerial					arduino;
 
 	vector<bool>                g;
+    int                         size;
+    
+    const int                   width = 8;
+    int                         height = 0;
 public:
 	Arduino();
 
-	void						setup(int port);
+	bool						setup(int port);
+    
 	void						update();
+    
+    void                        setPos(int i);
+    void                        setPos(int x, int y);
 };
