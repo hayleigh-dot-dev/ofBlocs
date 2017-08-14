@@ -15,19 +15,19 @@ public:
 
 	int							size();
 	
-	void						addAgent();
-	void						removeAgent();
-	void						removeAgent(int i);
+	void                        addAgent(int width, int height);
+	void                        removeAgent();
+	void                        removeAgent(int i);
 
 	Agent &						getAgent(int i);
 
-	void						updateAgent(int i);
+	void                        updateAgent(int i);
 
-	void						resizeAgentGrid(int i, int width, int height);
-	void						updateAgentGrid(int i, int x, int y, bool b);
-	void						updateAgentGrid(int i, int j, bool b);
+	void                        resizeAgentGrid(int i, int width, int height);
+	void                        updateAgentGrid(int i, int x, int y, bool b);
+	void                        updateAgentGrid(int i, int j, bool b);
 
-	bool						hasAgentCollided(int i);
+	bool                        hasAgentCollided(int i);
 
 	int							getAgentX(int i);
 	int							getAgentY(int i);

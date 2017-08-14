@@ -1,6 +1,7 @@
 #pragma once
 
-namespace Agent_Utilities {
+class Agent_Utilities {
+public:
 	enum Direction {
 		UP = 0,
 		RIGHT = 1,
@@ -11,12 +12,4 @@ namespace Agent_Utilities {
 	static int mapTo1d(int x, int y, int width) {
 		return width * x + y;
 	}
-
-	static int mapXto2d(int x, int width) {
-		return x % width;
-	}
-
-	static int mapYto2d(int y, int width) {
-		return y / width;
-	}
-}
+};

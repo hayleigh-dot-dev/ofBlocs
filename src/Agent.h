@@ -6,6 +6,7 @@
 class Agent {
 private:
 	vector<bool>                grid;
+    int                         size;
 	int							width  = 0;
 	int							height = 0;
 
@@ -14,24 +15,25 @@ private:
 	int							x = 0;
 	int							y = 0;
 	Agent_Utilities::Direction	d;
-	bool						c;
+    int                         collisionCount = 0;
+	bool                        c;
 
-	void						move();
+	void                        move();
 
-	bool						checkCollision(int x, int y);
+	bool                        checkCollision(int x, int y);
 	Agent_Utilities::Direction	changeDirection(Agent_Utilities::Direction currentD);
 	Agent_Utilities::Direction	changeDirection();
 
 public:
-	Agent();
+	Agent(int width, int height);
 
-	void						update();
+	void                        update();
 	
-	void						resizeGrid(int width, int height);
-	void						updateGrid(int x, int y, bool b);
-	void						updateGrid(int i, bool b);
+	void                        resizeGrid(int width, int height);
+	void                        updateGrid(int x, int y, bool b);
+	void                        updateGrid(int i, bool b);
 
-	bool						hasCollided();
+	bool                        hasCollided();
 
 	int							getX();
 	int							getY();

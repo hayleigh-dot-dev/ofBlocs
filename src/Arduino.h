@@ -5,20 +5,22 @@
 
 class Arduino {
 private:
-	ofSerial					arduino;
+	ofSerial                    arduino;
 
-	vector<bool>                g;
-    int                         size;
+	vector<bool>                grid;
     
     const int                   width = 8;
-    int                         height = 0;
+    const int                   height = 8;
 public:
 	Arduino();
 
-	bool						setup(int port);
+	bool                        setup(int port, int baud);
+    bool                        setup(string device, int baud);
     
-	void						update();
+	void                        update();
     
     void                        setPos(int i);
     void                        setPos(int x, int y);
+    
+    vector<bool>                getGrid();
 };

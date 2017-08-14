@@ -1,0 +1,15 @@
+#N canvas 490 17 450 300 10;
+#X obj 28 17 inlet;
+#X obj 72 113 synth;
+#X obj 28 163 outlet~;
+#X obj 72 64 tabread scale;
+#X obj 28 141 adsr;
+#X obj 72 42 random 11;
+#X obj 72 91 + 50;
+#X connect 0 0 4 0;
+#X connect 0 0 5 0;
+#X connect 1 0 4 1;
+#X connect 3 0 6 0;
+#X connect 4 0 2 0;
+#X connect 5 0 3 0;
+#X connect 6 0 1 0;

@@ -3,7 +3,7 @@
 //--------------------------------------------------------------
 // Constructor -------------------------------------------------
 Arduino::Arduino() {
-
+    grid.resize(width * height);
 }
 
 //--------------------------------------------------------------
@@ -11,51 +11,54 @@ Arduino::Arduino() {
 
 //--------------------------------------------------------------
 // Public Functions --------------------------------------------
-bool Arduino::setup(int port) {
-	arduino.setup(port, 9600);
+bool Arduino::setup(int port, int baud) {
+	arduino.setup(port, baud);
     
-    int time = ofGetElapsedTimeMillis();
-    int wait = 500;
-    
-    size = 0;
-    
-    while (time + wait < ofGetElapsedTimeMillis()) {
-        if (arduino.available()) {
-            char readByte = arduino.readByte();
-            
-            if (readByte == OF_SERIAL_NO_DATA) {
-                ofLog(OF_LOG_WARNING, "Arduino::setup: No data read.");
-            }
-            else if (readByte == OF_SERIAL_ERROR) {
-                ofLog(OF_LOG_WARNING, "Arduino::setup: Error reading serial data.");
-            }
-            else {
-                size = readByte;
-            }
+    // Request grid from arduino
+    if (arduino.isInitialized()) {
+        arduino.writeByte(255);
+
+        unsigned char data[64];
+        arduino.readBytes(data, 64);
+
+        for (int i = 0; i < 64; i++) {
+            // Explicit char -> bool conversion
+            grid[i] = static_cast<bool>(data[i]);
         }
     }
     
-    if (size > 0) {
-        return true;
-    }
-    else {
-        ofLog(OF_LOG_ERROR, "Arduino::setup: Size equals 0, error setting up.");
-    }
+}
+
+bool Arduino::setup(string device, int baud) {
+    arduino.setup(device, baud);
 }
 
 //--------------------------------------------------------------
 void Arduino::update() {
-    
+    // Request grid from arduino
+    if (arduino.isInitialized()) {
+        arduino.writeByte(255);
+
+        unsigned char data[64];
+        arduino.readBytes(data, 64);
+
+        for (int i = 0; i < 64; i++) {
+            // Explicit char -> bool conversion
+            grid[i] = static_cast<bool>(data[i]);
+        }
+    }
 }
 
 //--------------------------------------------------------------
 void Arduino::setPos(int i) {
-    unsigned char pos = (char) i % size;
-    unsigned char data[2] = {pos, 255};
-    
-    arduino.writeBytes(&data[0], 2);
+
 }
 
 void Arduino::setPos(int x, int y) {
     
+}
+
+//--------------------------------------------------------------
+vector<bool> Arduino::getGrid() {
+    return grid;
 }

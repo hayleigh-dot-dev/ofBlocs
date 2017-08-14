@@ -13,8 +13,8 @@ int Agent_System::size() {
 }
 
 //--------------------------------------------------------------
-void Agent_System::addAgent() {
-	a.push_back(Agent());
+void Agent_System::addAgent(int width, int height) {
+	a.push_back(Agent(width, height));
 
 	s++;
 }

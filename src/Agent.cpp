@@ -2,13 +2,31 @@
 
 //--------------------------------------------------------------
 // Constructor -------------------------------------------------
-Agent::Agent() {
+Agent::Agent(int width, int height) {
+    this->width = width;
+	this->height = height;
+	this->size = width * height;
+
+    grid.resize(size);
+
+    x = width/2;
+    y = height/2;
+    
 	d = changeDirection();
 }
 
 //--------------------------------------------------------------
 // Private Functions -------------------------------------------
 void Agent::move() {
+    if (checkCollision(x, y)) {
+        x = (int)ofRandom(this->width);
+        y = (int)ofRandom(this->height);
+        
+        collisionCount = 0;
+        
+        move();
+    }
+
 	int newX = x;
 	int newY = y;
 	switch (d) {
@@ -26,42 +44,65 @@ void Agent::move() {
 			break;
 	}
 
-	if (checkCollision(newX, newY)) {
+	ofLog(OF_LOG_NOTICE, "Agent::move: d = " + ofToString(d));
+    ofLog(OF_LOG_NOTICE, "Agent::move: collisionCount = " + ofToString(collisionCount));
+    if (collisionCount >= 4) {
+        x = (int)ofRandom(this->width);
+        y = (int)ofRandom(this->height);
+        
+        collisionCount = 0;
+        
+        move();
+    } else if (checkCollision(newX, newY)) {
 		c = true;
 		d = changeDirection(d);
-
+        
+        collisionCount++;
+        
 		move();
-	}
-	else {
+	} else {
 		x = newX;
 		y = newY;
+        
+        collisionCount = 0;
 	}
 }
 
 bool Agent::checkCollision(int x, int y) {
-	bool collision = false;
-	int i = Agent_Utilities::mapTo1d(x, y, width);
-
-	collision = grid[i];
+	int i = width * x + y;
+	bool collision = grid[i];
 
 	return collision;
 }
 
 Agent_Utilities::Direction Agent::changeDirection(Agent_Utilities::Direction currentD) {
-	int a[] = { 0, 1, 2, 3 };
-	int i = rand() % 4;
+    static Agent_Utilities::Direction a[] = { 
+        Agent_Utilities::UP, 
+        Agent_Utilities::RIGHT,
+        Agent_Utilities::DOWN,
+        Agent_Utilities::LEFT
+    };
+    
+	int i = (int)ofRandom(4);
+    
+    Agent_Utilities::Direction newD = a[i];
 
-	if ((Agent_Utilities::Direction)a[i] == currentD) {
+	// These logs are the remains of testing
+    // but agents stop moving when they're taken away...
+    ofLog(OF_LOG_NOTICE, "Agent:changeDirection: i = " + ofToString(i));
+    ofLog(OF_LOG_NOTICE, "Agent:changeDirection: a[i] = " + ofToString(a[i]));
+    
+    if (newD == currentD) {
 		changeDirection(currentD);
 	}
 	else {
-		return (Agent_Utilities::Direction)a[i];
+		return newD;
 	}
 }
 
 Agent_Utilities::Direction Agent::changeDirection() {
 	int a[] = { 0, 1, 2, 3 };
-	int i = rand() % 4;
+	int i = (int)ofRandom(4);
 
 	return (Agent_Utilities::Direction)a[i];
 }
@@ -69,24 +110,20 @@ Agent_Utilities::Direction Agent::changeDirection() {
 //--------------------------------------------------------------
 // Public Functions --------------------------------------------
 void Agent::update() {
-	if (timer == 0) {
-		if (grid.size() > 0) {
-			c = false;
+    if (size > 0) {
+        c = false;
 
-			move();
-		}
-	}
-
-	timer = ++timer % 60;
+        move();
+    }
 }
 
 //--------------------------------------------------------------
 void Agent::resizeGrid(int width, int height) {
 	this->width = width;
 	this->height = height;
-	int size = width * height;
+	this->size = width * height;
 
-	grid.resize(size);
+    grid.resize(size);
 }
 
 void Agent::updateGrid(int x, int y, bool b) {
@@ -99,19 +136,19 @@ void Agent::updateGrid(int x, int y, bool b) {
 
 	int i = Agent_Utilities::mapTo1d(abs(x), abs(y), width);
 
-	if (i >= grid.size()) {
+	if (i >= size) {
 		ofLog(OF_LOG_WARNING, "Agent::updateGrid: Index out of bounds, wrapping to vector size.");
 	}
 
-	grid[i % grid.size()] = b;
+	grid[i % size] = b;
 }
 
 void Agent::updateGrid(int i, bool b) {
-	if (i >= grid.size()) {
+	if (i >= size) {
 		ofLog(OF_LOG_WARNING, "Agent::updateGrid: Index out of bounds, wrapping to vector size.");
 	}
 
-	grid[i % grid.size()] = b;
+	grid[i % size] = b;
 }
 
 //--------------------------------------------------------------
