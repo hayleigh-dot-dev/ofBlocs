@@ -31,24 +31,14 @@ void loop() {
     int val = nearestMultiple(analogRead(A0), 4);
     
     Serial.print(i, BIN);
-    Serial.println(" {");
-      Serial.print("  ");
-      Serial.println(val);
-    Serial.println("}");
+    Serial.print(": ");
+    Serial.println(val);
   
-    delay(500);
+    delay(10);
   }
 }
 
 // Clean the input so we only get multiples of 4
 int nearestMultiple(int num, int factor) {
-  int distance = num % factor;
-  int result;
-  
-  if (distance < factor/2) {
-    result = num - distance;  
-  } else {
-    result = num + (factor - distance);  
-  }
-  return result;
+    return (num - (num % factor)) >> 2;
 }
