@@ -28,7 +28,7 @@ void loop() {
       );
     }
     
-    int val = analogRead(A0);
+    int val = nearestMultiple(analogRead(A0), 4);
     
     Serial.print(i, BIN);
     Serial.println(" {");
@@ -38,4 +38,17 @@ void loop() {
   
     delay(500);
   }
+}
+
+// Clean the input so we only get multiples of 4
+int nearestMultiple(int num, int factor) {
+  int distance = num % factor;
+  int result;
+  
+  if (distance < factor/2) {
+    result = num - distance;  
+  } else {
+    result = num + (factor - distance);  
+  }
+  return result;
 }
