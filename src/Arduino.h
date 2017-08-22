@@ -7,7 +7,16 @@ class Arduino {
 private:
 	ofSerial                    arduino;
 
-	vector<bool>                grid;
+	vector<bool>                grid = {
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0
+    };
     
     const int                   width = 8;
     const int                   height = 8;

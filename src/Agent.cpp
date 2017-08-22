@@ -9,28 +9,32 @@ Agent::Agent(int width, int height) {
 
     grid.resize(size);
 
+    // Place agents in the centre of the grid
     x = width/2;
     y = height/2;
     
-	d = changeDirection();
+	// Give agent a random direction
+    d = changeDirection();
 }
 
 //--------------------------------------------------------------
 // Private Functions -------------------------------------------
 void Agent::move() {
+    // If a block was placed on an agent
+    // place it randomly on the grid 
     if (checkCollision(x, y)) {
         x = (int)ofRandom(this->width);
         y = (int)ofRandom(this->height);
         
         collisionCount = 0;
-        
-        move();
     }
 
-	int newX = x;
+	// Values used to store the next position based on d
+    int newX = x;
 	int newY = y;
 	switch (d) {
 		case Agent_Utilities::UP:
+            // Ternary operater quickly handles bounds wrapping
 			y - 1 < 0 ? newY = height - 1 : newY = y - 1;
 			break;
 		case Agent_Utilities::RIGHT:
@@ -46,6 +50,9 @@ void Agent::move() {
 
 	ofLog(OF_LOG_NOTICE, "Agent::move: d = " + ofToString(d));
     ofLog(OF_LOG_NOTICE, "Agent::move: collisionCount = " + ofToString(collisionCount));
+    // To avoid potentially selecting infinite invalid new directions
+    // a hard cap of 4 attempts is in place, after which the agent is
+    // placed randomly elsewhere on the grid
     if (collisionCount >= 4) {
         x = (int)ofRandom(this->width);
         y = (int)ofRandom(this->height);
@@ -53,29 +60,38 @@ void Agent::move() {
         collisionCount = 0;
         
         move();
-    } else if (checkCollision(newX, newY)) {
+    } 
+    // Check if the new position collides with a block
+    else if (checkCollision(newX, newY)) {
 		c = true;
 		d = changeDirection(d);
         
         collisionCount++;
         
-		move();
-	} else {
+		// If there is a collision, recursively call move
+        move();
+	} 
+    // If no collision is detected, update x and y with the new position
+    else {
 		x = newX;
 		y = newY;
         
+        // Reset collision count
         collisionCount = 0;
 	}
 }
 
 bool Agent::checkCollision(int x, int y) {
+    // 2d - 1d conversion
 	int i = width * x + y;
+    // See if grid is populated with a block
 	bool collision = grid[i];
 
 	return collision;
 }
 
 Agent_Utilities::Direction Agent::changeDirection(Agent_Utilities::Direction currentD) {
+    // Static define means this array remains through recursive calls
     static Agent_Utilities::Direction a[] = { 
         Agent_Utilities::UP, 
         Agent_Utilities::RIGHT,
@@ -92,6 +108,7 @@ Agent_Utilities::Direction Agent::changeDirection(Agent_Utilities::Direction cur
     ofLog(OF_LOG_NOTICE, "Agent:changeDirection: i = " + ofToString(i));
     ofLog(OF_LOG_NOTICE, "Agent:changeDirection: a[i] = " + ofToString(a[i]));
     
+    // If random direction is the same, recursively select another
     if (newD == currentD) {
 		changeDirection(currentD);
 	}
@@ -111,6 +128,7 @@ Agent_Utilities::Direction Agent::changeDirection() {
 // Public Functions --------------------------------------------
 void Agent::update() {
     if (size > 0) {
+        // Reset the collision variable every update
         c = false;
 
         move();

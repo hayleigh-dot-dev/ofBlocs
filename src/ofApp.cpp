@@ -1,20 +1,20 @@
 #include "ofApp.h"
 
-#define FRAMERATE 6
+#define FRAMERATE 8
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    // Framerate effectively sets how often we poll arduino for updates
 	ofSetFrameRate(FRAMERATE);
 
-    ofSetBackgroundColor(255);
+    ofSetBackgroundColor(ofColor::fromHex(0xF7D4BC));
 
 	//----------------------------------------------------------
     // Connect to Arduinos
     serial.listDevices();
-    arduino.setup("cu.usbmodem1461", 9600);
+    isConnected = arduino.setup("cu.usbmodem1491", 9600);
 
-    
-    grid = arduino.getGrid();
+    if (isConnected) grid = arduino.getGrid();
 
     //--------------------------------------------------------------
     // Add Agents
@@ -23,6 +23,7 @@ void ofApp::setup(){
     agentSystem.addAgent(8, 8);
     agentSystem.addAgent(8, 8);
 
+    // Update grid for each agent
     for(int i = 0; i < agentSystem.size(); i++) {
         for (int j = 0; j < 64; j++) {
             agentSystem.updateAgentGrid(i, j, grid[j]);
@@ -30,10 +31,12 @@ void ofApp::setup(){
     }
     //--------------------------------------------------------------
     // Borrowed from ofxPd example {
-    // Setup PureData
+    //   Setup PureData
     
-    // The number of libpd ticks per buffer,
-    // used to compute the audio buffer len: tpb * blocksize (always 64)
+    //   The number of libpd ticks per buffer,
+    //   used to compute the audio buffer len: tpb * blocksize (always 64)
+    
+    //   These are evaluated at compile time
     #ifdef TARGET_LINUX_ARM
         // longer latency for Raspberry PI
         int ticksPerBuffer = 32; // 32 * 64 = buffer len of 2048
@@ -42,7 +45,7 @@ void ofApp::setup(){
         int ticksPerBuffer = 8; // 8 * 64 = buffer len of 512
         int numInputs = 1;
     #endif
-    // setup OF sound stream
+    //   setup OF sound stream
     ofSoundStreamSetup(2, numInputs, this, 44100, ofxPd::blockSize()*ticksPerBuffer, 3);
     if(!pd.setup(2, numInputs, 44100, ticksPerBuffer, false)) {
         OF_EXIT_APP(1);
@@ -56,14 +59,18 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    // Arduino update is seperate from recieving the grid
+    // This way we can constantly poll arduino for updates without
+    // needlessly copying the grid
     arduino.update();
     
-    grid = arduino.getGrid();
-    
     if (timer == 0) {
+        grid = arduino.getGrid();
+    
         ofLog(OF_LOG_NOTICE, "["+ofToString(ofGetFrameNum())+"]" + "Updating agents:");
         
         for (int i = 0; i < agentSystem.size(); i++) {
+            // Demonstrate reference based access to agents
             Agent & selectedAgent = agentSystem.getAgent(i);
         
             for (int i = 0; i < 64; i++) {
@@ -78,27 +85,29 @@ void ofApp::update(){
             
             if (b) {
                 ofLog(OF_LOG_NOTICE, "  Agent"+ofToString(i)+ " collision detected");
+                // Send a pd bang to the receive object called 'trigger'
                 pd.sendBang("trigger");
             }
             ofLog(OF_LOG_NOTICE, "  Agent"+ofToString(i)+" position is: " + ofToString(x) + " : " + ofToString(y));
         }
     }
 
-	timer = ++timer % (FRAMERATE / 2);
+    // Update agents 2 times per second (effectively 120 bpm)
+	timer = ++timer % (FRAMERATE / 4);
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    // Debugging draw to visual represent grid and agent position
     for (int i = 0; i < 64; i++) {
         int x = (i % 8) * (ofGetWidth() / 8);
         int y = (i / 8) * (ofGetHeight() / 8);
         
         ofPushStyle();
             if (grid[i]) {
-                ofSetColor(0);
-                
+                ofSetHexColor(0x1F2332);  
+                ofDrawRectangle(x, y, ofGetWidth() / 8, ofGetHeight() / 8);
             }
-            ofDrawRectangle(x, y, ofGetWidth() / 8, ofGetHeight() / 8);
         ofPopStyle();
     }
     
@@ -109,7 +118,7 @@ void ofApp::draw(){
         int  y = selectedAgent.getY() * (ofGetHeight() / 8);
         
         ofPushStyle();
-            ofSetColor(0,255,0);
+            ofSetHexColor(0x92B6B1);
             ofDrawRectangle(x, y, ofGetWidth() / 8, ofGetHeight() / 8);
         ofPopStyle();
     }

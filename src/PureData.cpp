@@ -42,6 +42,7 @@ void PureData::openPatch(string path) {
 }
 
 //--------------------------------------------------------------
+// r is the receiver in the pd patch
 void PureData::sendBang(string r) {
     pd.sendBang(r);
 }

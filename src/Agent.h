@@ -21,6 +21,7 @@ private:
 	void                        move();
 
 	bool                        checkCollision(int x, int y);
+    
 	Agent_Utilities::Direction	changeDirection(Agent_Utilities::Direction currentD);
 	Agent_Utilities::Direction	changeDirection();
 

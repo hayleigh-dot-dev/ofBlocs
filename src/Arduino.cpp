@@ -12,7 +12,7 @@ Arduino::Arduino() {
 //--------------------------------------------------------------
 // Public Functions --------------------------------------------
 bool Arduino::setup(int port, int baud) {
-	arduino.setup(port, baud);
+	bool isConnected = arduino.setup(port, baud);
     
     // Request grid from arduino
     if (arduino.isInitialized()) {
@@ -26,11 +26,25 @@ bool Arduino::setup(int port, int baud) {
             grid[i] = static_cast<bool>(data[i]);
         }
     }
-    
+    return isConnected;
 }
 
 bool Arduino::setup(string device, int baud) {
-    arduino.setup(device, baud);
+    bool isConnected = arduino.setup(device, baud);
+    
+    // Request grid from arduino
+    if (arduino.isInitialized()) {
+        arduino.writeByte(255);
+
+        unsigned char data[64];
+        arduino.readBytes(data, 64);
+
+        for (int i = 0; i < 64; i++) {
+            // Explicit char -> bool conversion
+            grid[i] = static_cast<bool>(data[i]);
+        }
+    }
+    return isConnected;
 }
 
 //--------------------------------------------------------------

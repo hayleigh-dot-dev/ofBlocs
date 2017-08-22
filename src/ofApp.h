@@ -13,9 +13,12 @@
 class ofApp : public ofBaseApp{
 private:
 	Agent_System                agentSystem;
-	ofSerial                    serial;
+    
     PureData                    pd;
+    
+    ofSerial                    serial;
     Arduino                     arduino;
+    bool                        isConnected;
     
     vector<bool>                grid = {
         0,0,0,0,0,0,0,0,

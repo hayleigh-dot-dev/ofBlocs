@@ -8,6 +8,7 @@ Agent_System::Agent_System() {
 
 //--------------------------------------------------------------
 // Public Functions --------------------------------------------
+// Returns the number of agents
 int Agent_System::size() {
 	return s;
 }
@@ -19,6 +20,7 @@ void Agent_System::addAgent(int width, int height) {
 	s++;
 }
 
+// Remove the newest agent
 void Agent_System::removeAgent() {
 	if (s > 0) {
 		a.pop_back();
@@ -27,6 +29,7 @@ void Agent_System::removeAgent() {
 	}
 }
 
+// Remove a specific agent
 void Agent_System::removeAgent(int i) {
 	if (s > 0 && i < s) {
 		a.erase(a.begin() + i);
@@ -34,8 +37,11 @@ void Agent_System::removeAgent(int i) {
 		s--;
 	}
 }
-//--------------------------------------------------------------
 
+//--------------------------------------------------------------
+// Return a reference to an agent
+// Either use this to access agent methods directly, or use the rest
+// of Agent_System to interface with agents
 Agent & Agent_System::getAgent(int i)
 {
 	return a[i];
