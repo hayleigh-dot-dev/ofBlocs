@@ -12,7 +12,7 @@ void ofApp::setup(){
 	//----------------------------------------------------------
     // Connect to Arduinos
     serial.listDevices();
-    isConnected = arduino.setup("cu.usbmodem1491", 9600);
+    isConnected = arduino.setup(1, 9600);
 
     if (isConnected) grid = arduino.getGrid();
 
