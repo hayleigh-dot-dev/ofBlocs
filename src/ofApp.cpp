@@ -1,20 +1,22 @@
 #include "ofApp.h"
 
-#define FRAMERATE 8
-
 //--------------------------------------------------------------
 void ofApp::setup(){
-    // Framerate effectively sets how often we poll arduino for updates
-	ofSetFrameRate(FRAMERATE);
-
     ofSetBackgroundColor(ofColor::fromHex(0xF7D4BC));
 
 	//----------------------------------------------------------
     // Connect to Arduinos
     serial.listDevices();
-    isConnected = arduino.setup(1, 9600);
+    isArduinoConnected = false; //arduino.setup(1, 9600);
+    isMidiConnected = launchpad.setup("Launchpad");
 
-    if (isConnected) grid = arduino.getGrid();
+    if (isArduinoConnected) {
+        grid = arduino.getGrid();
+        // Framerate effectively sets how often we poll arduino for updates
+        framerate = 8;
+    }
+    
+    ofSetFrameRate(framerate);
 
     //--------------------------------------------------------------
     // Add Agents
@@ -58,27 +60,27 @@ void ofApp::setup(){
 }
 
 //--------------------------------------------------------------
-void ofApp::update(){
+void ofApp::updateArduino() {
     // Arduino update is seperate from recieving the grid
     // This way we can constantly poll arduino for updates without
     // needlessly copying the grid
     arduino.update();
-    
+
     if (timer == 0) {
         grid = arduino.getGrid();
-    
+        
         ofLog(OF_LOG_NOTICE, "["+ofToString(ofGetFrameNum())+"]" + "Updating agents:");
         
         for (int i = 0; i < agentSystem.size(); i++) {
             // Demonstrate reference based access to agents
             Agent & selectedAgent = agentSystem.getAgent(i);
-        
+            
             for (int i = 0; i < 64; i++) {
                 selectedAgent.updateGrid(i, grid[i]);
             }
             
             selectedAgent.update();
-        
+            
             int  x = selectedAgent.getX();
             int  y = selectedAgent.getY();
             bool b = selectedAgent.hasCollided();
@@ -91,13 +93,55 @@ void ofApp::update(){
             ofLog(OF_LOG_NOTICE, "  Agent"+ofToString(i)+" position is: " + ofToString(x) + " : " + ofToString(y));
         }
     }
+}
+
+void ofApp::updateMidi() {
+    launchpad.update();
+    
+    if (timer == 0) {
+        grid = launchpad.getGrid();
+        
+        ofLog(OF_LOG_NOTICE, "["+ofToString(ofGetFrameNum())+"]" + "Updating agents:");
+        
+        for (int i = 0; i < agentSystem.size(); i++) {
+            // Demonstrate reference based access to agents
+            Agent & selectedAgent = agentSystem.getAgent(i);
+            
+            for (int i = 0; i < 64; i++) {
+                selectedAgent.updateGrid(i, grid[i]);
+            }
+            
+            selectedAgent.update();
+            
+            int  x = selectedAgent.getX();
+            int  y = selectedAgent.getY();
+            bool b = selectedAgent.hasCollided();
+            
+            if (b) {
+                ofLog(OF_LOG_NOTICE, "  Agent"+ofToString(i)+ " collision detected");
+                // Send a pd bang to the receive object called 'trigger'
+                pd.sendBang("trigger");
+            }
+            ofLog(OF_LOG_NOTICE, "  Agent"+ofToString(i)+" position is: " + ofToString(x) + " : " + ofToString(y));
+            
+            launchpad.updateAgentPos(i, Agent_Utilities::mapTo1d(x, y, 8));
+        }
+    }
+}
+
+void ofApp::update(){
+    if (isArduinoConnected) {
+        updateArduino();
+    } else if (isMidiConnected) {
+        updateMidi();
+    }
 
     // Update agents 2 times per second (effectively 120 bpm)
-	timer = ++timer % (FRAMERATE / 4);
+	timer = ++timer % (framerate / 4);
 }
 
 //--------------------------------------------------------------
-void ofApp::draw(){
+void ofApp::drawDebug() {
     // Debugging draw to visual represent grid and agent position
     for (int i = 0; i < 64; i++) {
         int x = (i % 8) * (ofGetWidth() / 8);
@@ -105,7 +149,7 @@ void ofApp::draw(){
         
         ofPushStyle();
             if (grid[i]) {
-                ofSetHexColor(0x1F2332);  
+                ofSetHexColor(0x1F2332);
                 ofDrawRectangle(x, y, ofGetWidth() / 8, ofGetHeight() / 8);
             }
         ofPopStyle();
@@ -113,7 +157,7 @@ void ofApp::draw(){
     
     for (int i = 0; i < agentSystem.size(); i++) {
         Agent & selectedAgent = agentSystem.getAgent(i);
-
+        
         int  x = selectedAgent.getX() * (ofGetWidth() / 8);
         int  y = selectedAgent.getY() * (ofGetHeight() / 8);
         
@@ -122,6 +166,10 @@ void ofApp::draw(){
             ofDrawRectangle(x, y, ofGetWidth() / 8, ofGetHeight() / 8);
         ofPopStyle();
     }
+}
+
+void ofApp::draw(){
+    if (DEBUG) drawDebug();
 }
 
 //--------------------------------------------------------------

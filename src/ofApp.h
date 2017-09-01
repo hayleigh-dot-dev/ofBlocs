@@ -5,20 +5,29 @@
 
 #include "Agent.h"
 #include "Agent_System.h"
+#include "Agent_Utilities.h"
 
 #include "PureData.h"
 
 #include "Arduino.h"
+#include "Midi.h"
 
 class ofApp : public ofBaseApp{
 private:
+    bool                        DEBUG = true;
+    int                         framerate = 30;
+    
 	Agent_System                agentSystem;
     
     PureData                    pd;
     
     ofSerial                    serial;
+    
     Arduino                     arduino;
-    bool                        isConnected;
+    bool                        isArduinoConnected;
+    
+    Midi                        launchpad;
+    bool                        isMidiConnected;
     
     vector<bool>                grid = {
         0,0,0,0,0,0,0,0,
@@ -33,6 +42,9 @@ private:
 
 	int                         timer = 0;
 
+    void                        drawDebug();
+    void                        updateArduino();
+    void                        updateMidi();
 public:
 	void                        setup();
 	void                        update();

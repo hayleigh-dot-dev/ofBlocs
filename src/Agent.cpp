@@ -46,6 +46,10 @@ void Agent::move() {
 		case Agent_Utilities::LEFT:
 			x - 1 < 0 ? newX = width - 1 : newX = x - 1;
 			break;
+        default:
+            d = changeDirection(d);
+            move();
+            break;
 	}
 
 	ofLog(OF_LOG_NOTICE, "Agent::move: d = " + ofToString(d));
@@ -101,7 +105,7 @@ Agent_Utilities::Direction Agent::changeDirection(Agent_Utilities::Direction cur
     
 	int i = (int)ofRandom(4);
     
-    Agent_Utilities::Direction newD = a[i];
+    Agent_Utilities::Direction newD = a[i%4];
 
 	// These logs are the remains of testing
     // but agents stop moving when they're taken away...
