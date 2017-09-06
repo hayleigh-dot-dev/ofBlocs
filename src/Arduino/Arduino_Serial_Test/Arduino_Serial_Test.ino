@@ -25,18 +25,10 @@ int * grid;
 
 void setup() {
   Serial.begin(9600);
-
-  grid = grid_1;
 }
 
 void loop() {
-  // Change grid every 5 seconds
-  // This assigns the pointer every loop to simulate reading the real grid
-  if (millis() % 10000 > 5000) {
-    grid = grid_2;
-  } else {
-    grid = grid_1;
-  }
+
   
   if (Serial.available() > 0) {
     byte byteRead = Serial.read();
