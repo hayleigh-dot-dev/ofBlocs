@@ -137,7 +137,7 @@ void ofApp::update(){
     }
 
     // Update agents 2 times per second (effectively 120 bpm)
-	timer = ++timer % (framerate / 4);
+	timer = ++timer % (framerate/4);
 }
 
 //--------------------------------------------------------------
@@ -163,13 +163,17 @@ void ofApp::drawDebug() {
         
         ofPushStyle();
             ofSetHexColor(0x92B6B1);
-            ofDrawRectangle(x, y, ofGetWidth() / 8, ofGetHeight() / 8);
+            ofDrawRectangle(y, x, ofGetWidth() / 8, ofGetHeight() / 8);
         ofPopStyle();
     }
 }
 
 void ofApp::draw(){
     if (DEBUG) drawDebug();
+}
+
+void ofApp::exit() {
+    launchpad.close();
 }
 
 //--------------------------------------------------------------

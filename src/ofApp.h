@@ -49,6 +49,7 @@ public:
 	void                        setup();
 	void                        update();
 	void                        draw();
+    void                        exit();
     
     void                        audioReceived(float * input, int bufferSize, int nChannels);
     void                        audioRequested(float * output, int bufferSize, int nChannels);

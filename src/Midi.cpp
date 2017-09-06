@@ -6,12 +6,6 @@ Midi::Midi() {
     agentPos.resize(4);
 }
 
-// Deconstructor -------------------------------------------------
-Midi::~Midi() {
-    midiInput.closePort();
-    midiInput.removeListener(this);
-}
-
 //--------------------------------------------------------------
 // Private Functions -------------------------------------------
 int Midi::midiIndexOf(int val) {
@@ -57,6 +51,12 @@ bool Midi::setup(string device) {
     return connected;
 }
 
+void Midi::close() {
+    midiOutput.closePort();
+    midiInput.closePort();
+    midiInput.removeListener(this);
+}
+
 //--------------------------------------------------------------
 void Midi::update() {
 
@@ -65,7 +65,9 @@ void Midi::update() {
 //--------------------------------------------------------------
 void Midi::updateAgentPos(int agent, int pos) {
     // Turn off previous position
-    midiOutput << NoteOff(1, midiGrid[agentPos[agent]], 0);
+    grid[agentPos[agent]] ?
+        midiOutput << NoteOn(1, midiGrid[agentPos[agent]], 11) :
+        midiOutput << NoteOff(1, midiGrid[agentPos[agent]], 0);
     
     agentPos[agent] = pos;
     midiOutput << NoteOn(1, midiGrid[agentPos[agent]], 127);

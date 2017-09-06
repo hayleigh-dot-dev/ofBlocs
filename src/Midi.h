@@ -39,10 +39,10 @@ private:
     int                         midiIndexOf(int val);
 public:
     Midi();
-    ~Midi();
     
     bool                        setup(int port);
     bool                        setup(string device);
+    void                        close();
     
     void                        update();
     
