@@ -83,11 +83,65 @@ vector<bool> Midi::getGrid() {
 void Midi::newMidiMessage(ofxMidiMessage & msg) {
     midiMessage = msg;
     
-    if (midiMessage.velocity > 0) {
-        int index = midiIndexOf(midiMessage.pitch);
-        if (index >= 0 && index < midiGrid.size()) {
-            grid[index] = !grid[index];
-            grid[index] ? midiOutput << NoteOn(1, midiGrid[index], 11) : midiOutput << NoteOff(1, midiGrid[index], 0);
-        }
+    ofLog(OF_LOG_NOTICE, ofToString(midiMessage.pitch));
+    
+    switch (midiMessage.pitch) {
+        case 8:
+            grid = template_0;
+            for (int i = 0; i < grid.size(); i++) {
+                grid[i] ? midiOutput << NoteOn(1, midiGrid[i], 11) : midiOutput << NoteOff(1, midiGrid[i], 0);
+            }
+            break;
+        case 24:
+            grid = template_1;
+            for (int i = 0; i < grid.size(); i++) {
+                grid[i] ? midiOutput << NoteOn(1, midiGrid[i], 11) : midiOutput << NoteOff(1, midiGrid[i], 0);
+            }
+            break;
+        case 40:
+            grid  = template_2;
+            for (int i = 0; i < grid.size(); i++) {
+                grid[i] ? midiOutput << NoteOn(1, midiGrid[i], 11) : midiOutput << NoteOff(1, midiGrid[i], 0);
+            }
+            break;
+        case 56:
+            grid  = template_3;
+            for (int i = 0; i < grid.size(); i++) {
+                grid[i] ? midiOutput << NoteOn(1, midiGrid[i], 11) : midiOutput << NoteOff(1, midiGrid[i], 0);
+            }
+            break;
+        case 72:
+            grid  = template_4;
+            for (int i = 0; i < grid.size(); i++) {
+                grid[i] ? midiOutput << NoteOn(1, midiGrid[i], 11) : midiOutput << NoteOff(1, midiGrid[i], 0);
+            }
+            break;
+        case 88:
+            grid  = template_5;
+            for (int i = 0; i < grid.size(); i++) {
+                grid[i] ? midiOutput << NoteOn(1, midiGrid[i], 11) : midiOutput << NoteOff(1, midiGrid[i], 0);
+            }
+            break;
+        case 104:
+            grid  = template_6;
+            for (int i = 0; i < grid.size(); i++) {
+                grid[i] ? midiOutput << NoteOn(1, midiGrid[i], 11) : midiOutput << NoteOff(1, midiGrid[i], 0);
+            }
+            break;
+        case 120:
+            grid  = template_7;
+            for (int i = 0; i < grid.size(); i++) {
+                grid[i] ? midiOutput << NoteOn(1, midiGrid[i], 11) : midiOutput << NoteOff(1, midiGrid[i], 0);
+            }
+            break;
+        default:
+            if (midiMessage.velocity > 0) {
+                int index = midiIndexOf(midiMessage.pitch);
+                if (index >= 0 && index < midiGrid.size()) {
+                    grid[index] = !grid[index];
+                    grid[index] ? midiOutput << NoteOn(1, midiGrid[index], 11) : midiOutput << NoteOff(1, midiGrid[index], 0);
+                }
+            }
+            break;
     }
 }

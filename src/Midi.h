@@ -3,6 +3,8 @@
 #include "ofMain.h"
 #include "ofxMidi.h"
 
+#include "Templates.h"
+
 class Midi : public ofxMidiListener {
 private:
     ofxMidiIn                   midiInput;
