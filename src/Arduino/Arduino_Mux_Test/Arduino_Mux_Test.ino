@@ -1,6 +1,6 @@
-int s0 = 4;
+int s0 = 2;
 int s1 = 3;
-int s2 = 2;
+int s2 = 4;
 
 void setup() {
   Serial.begin(9600);
@@ -9,6 +9,11 @@ void setup() {
   pinMode(s0, OUTPUT);
   pinMode(s1, OUTPUT);
   pinMode(s2, OUTPUT);
+
+    for (int i = 8; i < 14; i++) {
+    pinMode(i, OUTPUT);
+    digitalWrite(i, HIGH);
+  }
 }
 
 void loop() {
@@ -26,13 +31,12 @@ void loop() {
     // Read y(i) from mux
     int val = analogRead(A0);
 
-    Serial.print("Pin ");
+    Serial.print("[");
     Serial.print(i);
-    Serial.println("{");
-      Serial.print("  ");
-      Serial.println(val >> 2, BIN);
-    Serial.println("}");
-
-    delay(500);
+    Serial.print(":  ");
+    Serial.print(val);
+    Serial.print("]");
   }
+  Serial.println("");
+  delay(1000);
 }

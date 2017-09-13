@@ -7,19 +7,10 @@ class Arduino {
 private:
 	ofSerial                    arduino;
 
-	vector<bool>                grid = {
-        0,0,0,0,0,0,0,0,
-        0,0,0,0,0,0,0,0,
-        0,0,0,0,0,0,0,0,
-        0,0,0,0,0,0,0,0,
-        0,0,0,0,0,0,0,0,
-        0,0,0,0,0,0,0,0,
-        0,0,0,0,0,0,0,0,
-        0,0,0,0,0,0,0,0
-    };
+	vector<int>                 grid = {0,0,0,0,0,0,0,0};
     
-    const int                   width = 8;
-    const int                   height = 8;
+    //const int                 width = 8;
+    //const int                 height = 8;
 public:
 	Arduino();
 
@@ -31,5 +22,5 @@ public:
     void                        setPos(int i);
     void                        setPos(int x, int y);
     
-    vector<bool>                getGrid();
+    vector<int>                getGrid();
 };

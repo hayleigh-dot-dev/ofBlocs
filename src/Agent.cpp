@@ -52,8 +52,8 @@ void Agent::move() {
             break;
 	}
 
-	ofLog(OF_LOG_NOTICE, "Agent::move: d = " + ofToString(d));
-    ofLog(OF_LOG_NOTICE, "Agent::move: collisionCount = " + ofToString(collisionCount));
+//	ofLog(OF_LOG_NOTICE, "Agent::move: d = " + ofToString(d));
+//    ofLog(OF_LOG_NOTICE, "Agent::move: collisionCount = " + ofToString(collisionCount));
     // To avoid potentially selecting infinite invalid new directions
     // a hard cap of 4 attempts is in place, after which the agent is
     // placed randomly elsewhere on the grid
@@ -107,10 +107,10 @@ Agent_Utilities::Direction Agent::changeDirection(Agent_Utilities::Direction cur
     
     Agent_Utilities::Direction newD = a[i%4];
 
-	// These logs are the remains of testing
-    // but agents stop moving when they're taken away...
-    ofLog(OF_LOG_NOTICE, "Agent:changeDirection: i = " + ofToString(i));
-    ofLog(OF_LOG_NOTICE, "Agent:changeDirection: a[i] = " + ofToString(a[i]));
+//	// These logs are the remains of testing
+//    // but agents stop moving when they're taken away...
+//    ofLog(OF_LOG_NOTICE, "Agent:changeDirection: i = " + ofToString(i));
+//    ofLog(OF_LOG_NOTICE, "Agent:changeDirection: a[i] = " + ofToString(a[i]));
     
     // If random direction is the same, recursively select another
     if (newD == currentD) {

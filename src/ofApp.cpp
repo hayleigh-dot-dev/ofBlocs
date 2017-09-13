@@ -7,14 +7,14 @@ void ofApp::setup(){
 	//----------------------------------------------------------
     // Connect to Arduinos
     serial.listDevices();
-    isArduinoConnected = false; //arduino.setup(1, 9600);
+    isArduinoConnected = arduino.setup(1, 9600);
     isMidiConnected = launchpad.setup("Launchpad");
 
-    if (isArduinoConnected) {
-        grid = arduino.getGrid();
-        // Framerate effectively sets how often we poll arduino for updates
-        framerate = 8;
-    }
+//    if (isArduinoConnected) {
+//        grid = arduino.getGrid();
+//        // Framerate effectively sets how often we poll arduino for updates
+//        framerate = 8;
+//    }
     
     ofSetFrameRate(framerate);
 
@@ -65,33 +65,25 @@ void ofApp::updateArduino() {
     // This way we can constantly poll arduino for updates without
     // needlessly copying the grid
     arduino.update();
-
-    if (timer == 0) {
-        grid = arduino.getGrid();
-        
-        ofLog(OF_LOG_NOTICE, "["+ofToString(ofGetFrameNum())+"]" + "Updating agents:");
-        
-        for (int i = 0; i < agentSystem.size(); i++) {
-            // Demonstrate reference based access to agents
-            Agent & selectedAgent = agentSystem.getAgent(i);
-            
-            for (int i = 0; i < 64; i++) {
-                selectedAgent.updateGrid(i, grid[i]);
-            }
-            
-            selectedAgent.update();
-            
-            int  x = selectedAgent.getX();
-            int  y = selectedAgent.getY();
-            bool b = selectedAgent.hasCollided();
-            
-            if (b) {
-                ofLog(OF_LOG_NOTICE, "  Agent"+ofToString(i)+ " collision detected");
-                // Send a pd bang to the receive object called 'trigger'
-                pd.sendBang("trigger");
-            }
-            ofLog(OF_LOG_NOTICE, "  Agent"+ofToString(i)+" position is: " + ofToString(x) + " : " + ofToString(y));
-        }
+    vector<int> arduinoGrid = arduino.getGrid();
+    
+    
+    if (arduinoGrid[7] > 200) {
+        launchpad.updateGridFromTemplate(7);
+    } else if (arduinoGrid[6] > 200) {
+        launchpad.updateGridFromTemplate(6);
+    }else if (arduinoGrid[5] > 200) {
+        launchpad.updateGridFromTemplate(5);
+    }else if (arduinoGrid[4] > 200) {
+        launchpad.updateGridFromTemplate(4);
+    }else if (arduinoGrid[3] > 200) {
+        launchpad.updateGridFromTemplate(3);
+    }else if (arduinoGrid[2] > 200) {
+        launchpad.updateGridFromTemplate(2);
+    }else if (arduinoGrid[1] > 200) {
+        launchpad.updateGridFromTemplate(1);
+    }else if (arduinoGrid[0] > 200) {
+        launchpad.updateGridFromTemplate(0);
     }
 }
 
@@ -130,9 +122,10 @@ void ofApp::updateMidi() {
 }
 
 void ofApp::update(){
-    if (isArduinoConnected) {
-        updateArduino();
-    } else if (isMidiConnected) {
+//    if (isArduinoConnected) {
+//        updateArduino();
+//    }
+    if (isMidiConnected) {
         updateMidi();
     }
 

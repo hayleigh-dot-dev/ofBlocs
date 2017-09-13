@@ -3,7 +3,7 @@
 #include "ofMain.h"
 #include "ofxMidi.h"
 
-#include "Templates.h"
+#include "Midi_Templates.h"
 
 class Midi : public ofxMidiListener {
 private:
@@ -24,7 +24,10 @@ private:
         0,0,0,0,0,0,0,0,
         0,0,0,0,0,0,0,0
     };
+    int                         numActive = 0;
     vector<int>                 agentPos;
+    
+    int                         previousTemplate = 0;
     
     // Grid of launchpad midi note values we want
     vector<int>                 midiGrid = {
@@ -50,6 +53,8 @@ public:
     
     vector<bool>                getGrid();
     void                        updateAgentPos(int agent, int pos);
+    
+    void                        updateGridFromTemplate(int i);
     
     void                        newMidiMessage(ofxMidiMessage & eventArgs);
 };

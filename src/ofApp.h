@@ -15,7 +15,7 @@
 class ofApp : public ofBaseApp{
 private:
     bool                        DEBUG = true;
-    int                         framerate = 30;
+    int                         framerate = 10;
     
 	Agent_System                agentSystem;
     
